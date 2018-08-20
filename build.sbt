@@ -13,7 +13,7 @@ testFrameworks += new TestFramework("utest.runner.Framework")
 bintrayPackageLabels := Seq("sbt", "plugin")
 bintrayVcsUrl := Some("""git@github.com:BotTech/sbt-cached-updates.git""")
 bintrayRepository := "sbt-plugins"
-bintrayOrganization in bintray := None
+bintrayOrganization := Some("bottech")
 
 initialCommands in console := """import nz.co.bottech.sbt._"""
 
