@@ -1,23 +1,34 @@
 language: scala
 
+sudo: false
+
 jdk:
   - oraclejdk8
-
-script:
-  - sbt -Dfile.encoding=UTF8 scripted
-
-sudo: false
 
 addons:
   apt:
     packages:
-      - oracle-java8-installer
+    - oracle-java8-installer
+
+env:
+  - secure: "CpNhLK3VOgbudAXC/0oo50bpEN7NVG7zFcIcsxSPcOstO4OXuO5Bs2m6l8P7ukhRAX4KQLi+Kqt6rIAYyx1yKcSzrst6wdxZv8YUKXzZVj1cFK/kXkaM4CN5vX0fpB0ou1n0JM87ZPZK8/c2m5cVSXVEuAhHoG1c5POEE7JMUz6yse6XGugILhzzrFIwCvGTGQW77MiPNmGKFRbHwAP3XBT20ViK7RR20ST082/JnpHk/OycJ3TeBXBYYB9ZJp0GltaLQoP12Ao2Elhcw4Inqk3y1m6NjI1HmtUxqrZSFBxVWZK0fc82ozENA8LhYmYAaPm+6MRELDxPXwsE7JbzGZiJfpj/s/Obeu1SJgPdakz/dl7g+0MHAbtBD8VZlC+08P7oKLbOeMbpq0fMu7tuY6N1JdAJDLoP4GC19LNaLXNk7MQoNPA7siQef9DH9/3BjCtJcM7D08m2sfU9OClSv2Ew8RTH/ph8bkWvOfmENj6jpHPRV7tUJ2fBBLFyX8CknNmC8o9P6p6tny0Sbo3H/kG1zdMwPm1Tc126GpISrachyuoebKvFTHZ+SBCfl0C7tpGdTM07WxnimyP+GnZUQWapKylve5zhgrZI7JiGJiYparmkdJp9xkFIMCkBixIT9OjQ9LIYqZV/H2e+07uYvbEQvCp+9WlzcFyXO94CUOo="
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_4a09436dfeda_key -iv $encrypted_4a09436dfeda_iv -in travis/secring.asc.enc -out travis/secring.asc -d
+
+script:
+  - sbt "^^$TRAVIS_SBT_VERSION" scripted
+
+after_success:
+  - if [ "$TRAVIS_PULL_REQUEST" = 'false' ] && [ -n "$TRAVIS_TAG" ]; then
+      sbt "^^$TRAVIS_SBT_VERSION" publishSigned
+    fi
 
 before_cache:
-  - find $HOME/.sbt -name "*.lock" | xargs rm
-  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+  - find "$HOME/.ivy2/cache" -name "ivydata-*.properties" -print -delete
+  - find "$HOME/.sbt"        -name "*.lock"               -print -delete
 
 cache:
   directories:
-    - $HOME/.ivy2/cache
-    - $HOME/.sbt/boot/
+    - "$HOME/.ivy2/cache"
+    - "$HOME/.sbt/boot/"
