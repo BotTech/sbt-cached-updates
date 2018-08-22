@@ -5,3 +5,5 @@
                                   |Specify this property using the scriptedLaunchOpts -D.""".stripMargin)
   else addSbtPlugin("nz.co.bottech" % """sbt-cached-updates""" % pluginVersion)
 }
+
+libraryDependencies += "org.scalactic" % "scalactic_2.12" % "3.0.5"
