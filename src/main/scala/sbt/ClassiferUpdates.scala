@@ -272,11 +272,8 @@ object ClassiferUpdates {
     }
 
     /* Check if a update report is still up to date or we must resolve again. */
-    def upToDate(inChanged: Boolean, out: UpdateReport): Boolean = {
-      !force &&
-        !depsUpdated &&
-        !inChanged &&
-        out.allFiles.forall(f => fileUptodate(f, out.stamps)) &&
+    def upToDate(out: UpdateReport): Boolean = {
+      out.allFiles.forall(f => fileUptodate(f, out.stamps)) &&
         fileUptodate(out.cachedDescriptor, out.stamps)
     }
 
@@ -301,14 +298,29 @@ object ClassiferUpdates {
         log.log(Level.Debug, {
           cacheStoreFactory.make("inputs.json").write(updateInputs)
           val hash = Hasher.hash(updateInputs)
-          s"Hash: $hash"
+          s"Inputs hash: $hash"
         })
         val cachedResolve = Tracked.lastOutput[UpdateInputs, UpdateReport](cache) {
-          case (_, Some(_)) if inChanged =>
-            log.debug("Cache miss.")
+          case (_, None) =>
+            log.debug("Update has not previously run successfully.")
             resolve
-          case (_, Some(out)) if upToDate(inChanged, out) => markAsCached(out)
-          case _ => resolve
+          case (_, Some(_)) if force =>
+            log.debug("Update has been forced.")
+            resolve
+          case (_, Some(_)) if depsUpdated =>
+            log.debug("Internal dependencies have changed.")
+            resolve
+          case (_, Some(_)) if inChanged =>
+            log.debug("Inputs have changed.")
+            resolve
+          case (_, Some(out)) =>
+            if (upToDate(out)) {
+              log.debug("Using cached output.")
+              markAsCached(out)
+            } else {
+              log.debug("Output is out of date.")
+              resolve
+            }
         }
         import scala.util.control.Exception.catching
         catching(classOf[NullPointerException], classOf[OutOfMemoryError])
