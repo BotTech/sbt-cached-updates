@@ -75,7 +75,12 @@ object ClassiferUpdates {
     if (isPlugin) {
       Reference.display(thisRef)
     } else {
-      Def.displayRelativeReference(extracted.currentRef, thisRef)
+      val label = Def.displayRelativeReference(extracted.currentRef, thisRef)
+      if (label.isEmpty) {
+        "current"
+      } else {
+        label
+      }
     }
   }
 
