@@ -309,22 +309,22 @@ object ClassiferUpdates {
           case (_, None) =>
             log.debug("Update has not previously run successfully.")
             resolve
-          case (_, Some(_)) if force =>
-            log.debug("Update has been forced.")
-            resolve
-          case (_, Some(_)) if depsUpdated =>
-            log.debug("Internal dependencies have changed.")
-            resolve
-          case (_, Some(_)) if inChanged =>
-            log.debug("Inputs have changed.")
-            resolve
           case (_, Some(out)) =>
-            if (upToDate(out)) {
-              log.debug("Using cached output.")
-              markAsCached(out)
-            } else {
+            if (force) {
+              log.debug("Update has been forced.")
+              resolve
+            } else if (depsUpdated) {
+              log.debug("Internal dependencies have changed.")
+              resolve
+            } else if (inChanged) {
+              log.debug("Inputs have changed.")
+              resolve
+            } else if (!upToDate(out)) {
               log.debug("Output is out of date.")
               resolve
+            } else {
+              log.debug("Using cached output.")
+              markAsCached(out)
             }
         }
         import scala.util.control.Exception.catching
