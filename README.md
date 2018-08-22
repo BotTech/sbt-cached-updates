@@ -54,7 +54,14 @@ This directory will contain two files:
 If the hash is different to the previous hash then there will be a cache miss and the update task will run and cache
 the new results.
 
-TODO: Document `updateSbtClassifiers`
+`updateSbtClassifiers` works a little bit differently. It will first update a "base" module and then get all the
+modules from that and then again with the `classifiersModule` that has all the modules as dependencies.
+The messages for this look like:
+```sbtshell
+Updating classifiers for sbt (base)...
+...
+Updating classifiers for sbt (modules)...
+```
 
 ### Why do I keep seeing the "Updating classifiers" message?
 
@@ -67,7 +74,7 @@ set xxx/updateClassifiers/logLevel := Level.Debug
 
 Now when you run your task watch out for the messages:
 ```sbtshell
-[debug] Hash: Success(1021736120)
+[debug] Input hash: Success(1021736120)
 [debug] ...
 [info] Updating classifiers for xxx...
 ```
