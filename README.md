@@ -2,23 +2,99 @@
 
 An sbt plugin which caches all the sbt update tasks.
 
+By default, sbt only caches the `update` task. It does not cache `updateClassifiers` or `updateSbtClassifiers`.
+This plugin fixes that.
+
+Run sbt with:
+```bash
+sbt -Dsbt.task.timings=true -Dsbt.task.timings.on.shutdown=false
+```
+or use the [sbt-optimizer](https://github.com/jrudolph/sbt-optimizer) plugin and see the massive time savings.
+Keep in mind that updates are forced when you run the task directly.
+
 ## Usage
+
+This is an `AutoPlugin` which is automatically added to any project which `requires` the `IvyPlugin` which is the
+default for all projects.
 
 This plugin requires sbt 1.0.0+.
 
-### Testing
+### Adding the Plugin
 
-Run `test` for regular unit tests.
+It is recommended that you add this plugin to your `project/plugins.sbt` file:
+```scala
+addSbtPlugin("nz.co.bottech" % "sbt-cached-updates" % "1.0.0")
+```
 
-Run `scripted` for [sbt script tests](http://www.scala-sbt.org/1.x/docs/Testing-sbt-plugins.html).
+If you also work on other projects that do not use this plugin then add the line above to
+`~/.sbt/1.0/plugins/build.sbt`.
 
-### Publishing
+### Exclusions
 
-1. publish your source to GitHub
-2. [create a bintray account](https://bintray.com/signup/index) and [set up bintray credentials](https://github.com/sbt/sbt-bintray#publishing)
-3. create a bintray repository `sbt-plugins` 
-4. update your bintray publishing settings in `build.sbt`
-5. `sbt publish`
-6. [request inclusion in sbt-plugin-releases](https://bintray.com/sbt/sbt-plugin-releases)
-7. [Add your plugin to the community plugins list](https://github.com/sbt/website#attention-plugin-authors)
-8. [Claim your project an Scaladex](https://github.com/scalacenter/scaladex-contrib#claim-your-project)
+One thing that may prevent the cache from working is the `~/.ivy2/exclude_classifiers` file.
+
+It seems that this file is to try and prevent repeatedly attempting to download classifiers that do not exist.
+The problem is that it frequently ends up either not excluding enough or excluding too much.
+
+It is strongly recommended that you delete this file and the lock file before using this plugin.
+
+## Troubleshooting
+
+`updateClassifiers` will now print the message:
+```sbtshell
+Updating classifiers for xxx...
+```
+when it is updating, just like it does for `update`. If you don't see this then it is using the cached results.
+
+You can find the update cache in `xxx/target/streams/$global/updateClassifiers/$global/streams/update_cache_2.12`.
+This directory will contain two files:
+* `inputs` - The hash of all the inputs.
+* `output` - The results from running the update.
+
+If the hash is different to the previous hash then there will be a cache miss and the update task will run and cache
+the new results.
+
+TODO: Document `updateSbtClassifiers`
+
+### Why do I keep seeing the "Updating classifiers" message?
+
+This is normal if you have actually changed a dependency or if you are running the task directly.
+
+To see what is going on enable debug logging:
+```sbtshell
+set xxx/updateClassifiers/logLevel := Level.Debug
+```
+
+Now when you run your task watch out for the messages:
+```sbtshell
+[debug] Hash: Success(1021736120)
+[debug] ...
+[info] Updating classifiers for xxx...
+```
+
+The messages in between will tell you why it isn't using the cached output.
+
+### Why has the hash/inputs changed?
+
+You may see that the hash is changing between executions, followed by a message saying that the inputs have changed,
+even though you have not changed any dependencies.
+
+When run with debug logging there will be an additional file in the cache directory:
+* `inputs.json` - JSON representation of the inputs that is hashed.
+
+Compare the `inputs.json` files from two separate executions.
+
+#### The classifiers change from sources to javadoc or vice versa
+
+As mentioned earlier, sbt will generate a `~/.ivy2/exclude_classifiers` file. These are filtered out of the inputs.
+Then when the update runs it will take the excludes from the update report and overwrite the `exclude_classifiers` file.
+
+What can happen is that the `exclude_classifiers` file gets into a strange state where it has only one classifier
+excluded for a library when it should have both. This causes the inputs to alternate.
+
+For example; If `exclude_classifiers` contains `sources` then when the update runs it ignores `sources` but then the
+report will say to exclude `javadoc`. Now `exclude_classifiers` will contain `javadoc` but not `sources`. It keeps
+alternating between `javadoc` and `sources`.
+
+This is likely a bug in sbt, specifically `sbt.Classpaths$.withExcludes`, but I have been unable to find a way to
+reliably reproduce it.
