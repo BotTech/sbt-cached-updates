@@ -1,5 +1,7 @@
 # sbt-cached-updates
 
+[![Build Status](https://travis-ci.org/BotTech/sbt-cached-updates.svg?branch=master)](https://travis-ci.org/BotTech/sbt-cached-updates)
+
 An sbt plugin which caches all the sbt update tasks.
 
 By default, sbt only caches the `update` task. It does not cache `updateClassifiers` or `updateSbtClassifiers`.
