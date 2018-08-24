@@ -1,6 +1,7 @@
 # sbt-cached-updates
 
 [![Build Status](https://travis-ci.org/BotTech/sbt-cached-updates.svg?branch=master)](https://travis-ci.org/BotTech/sbt-cached-updates)
+[![Download](https://api.bintray.com/packages/bottech/sbt-plugins/sbt-cached-updates/images/download.svg) ](https://bintray.com/bottech/sbt-plugins/sbt-cached-updates/_latestVersion)
 
 An sbt plugin which caches all the sbt update tasks.
 
