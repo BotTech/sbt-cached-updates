@@ -5,6 +5,8 @@ organizationName := "BotTech"
 homepage := Some(url("https://github.com/BotTech/sbt-cached-updates"))
 licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 
+scalaVersion := "2.12.6"
+
 sbtPlugin := true
 
 enablePlugins(ScriptedPlugin)
