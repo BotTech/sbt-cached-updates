@@ -18,9 +18,9 @@ publishMavenStyle := false
 pgpPublicRing := file("./travis/pubring.asc")
 pgpSecretRing := file("./travis/secring.asc")
 pgpPassphrase := sys.env.get("PGP_PASS").map(_.toArray)
+packagedArtifacts := PgpKeys.signedArtifacts.value
 
 bintrayOrganization := Some("bottech")
 bintrayPackageLabels := Seq("sbt", "plugin")
 
 ghreleaseRepoOrg := organizationName.value
-ghreleaseAssets := PgpKeys.signedArtifacts.value.values.toSeq
