@@ -1,7 +1,7 @@
 # sbt-cached-updates
 
-[![Build Status](https://travis-ci.org/BotTech/sbt-cached-updates.svg?branch=master)](https://travis-ci.org/BotTech/sbt-cached-updates)
-[![Download](https://api.bintray.com/packages/bottech/sbt-plugins/sbt-cached-updates/images/download.svg) ](https://bintray.com/bottech/sbt-plugins/sbt-cached-updates/_latestVersion)
+[![Build Status][Build Status]](https://travis-ci.org/BotTech/sbt-cached-updates)
+[![Download][Download]](https://bintray.com/bottech/sbt-plugins/sbt-cached-updates/_latestVersion)
 
 An sbt plugin which caches all the sbt update tasks.
 
@@ -12,7 +12,7 @@ Run sbt with:
 ```bash
 sbt -Dsbt.task.timings=true -Dsbt.task.timings.on.shutdown=false
 ```
-or use the [sbt-optimizer](https://github.com/jrudolph/sbt-optimizer) plugin and see the massive time savings.
+Alternatively use the [sbt-optimizer][sbt-optimizer] plugin and see the massive time savings.
 Keep in mind that updates are forced when you run the task directly.
 
 ## Usage
@@ -108,3 +108,23 @@ alternating between `javadoc` and `sources`.
 
 This is likely a bug in sbt, specifically `sbt.Classpaths$.withExcludes`, but I have been unable to find a way to
 reliably reproduce it.
+
+## Credits
+
+This plugin was generated from the [BotTech/sbt-autoplugin.g8][sbt-autoplugin] Giter8 template.
+
+Special thanks to:
+* [GitHub][Github] for hosting the git repository.
+* [Travis CI][Travis CI] for running the build.
+* [JFrog][JFrog] for distributing the releases on Bintray.
+* [Lightbend][Lightbend] for distributing the plugin in the community sbt repository.
+* All the other OSS contributors who made this project possible.
+
+[Build Status]: https://travis-ci.org/BotTech/sbt-cached-updates.svg?branch=master
+[Download]: https://api.bintray.com/packages/bottech/sbt-plugins/sbt-cached-updates/images/download.svg
+[Github]: https://github.com
+[JFrog]: https://jfrog.com
+[Lightbend]: https://www.lightbend.com
+[sbt-autoplugin]: https://github.com/BotTech/sbt-autoplugin.g8
+[sbt-optimizer]: https://github.com/jrudolph/sbt-optimizer
+[Travis CI]: https://travis-ci.org
