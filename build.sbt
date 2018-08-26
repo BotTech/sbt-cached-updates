@@ -17,8 +17,9 @@ scriptedLaunchOpts ++= Seq(
 
 publishMavenStyle := false
 
-pgpPublicRing := file("./travis/pubring.asc")
-pgpSecretRing := file("./travis/secring.asc")
+useGpg := true
+pgpSecretRing := file("./travis/secring.bin")
+usePgpKeyHex("D8534E92BA220A48D672800D9FF86654B58E9A01")
 pgpPassphrase := sys.env.get("PGP_PASS").map(_.toArray)
 publish / packagedArtifacts := PgpKeys.signedArtifacts.value
 

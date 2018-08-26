@@ -23,7 +23,7 @@ env:
 script: sbt scripted
 
 before_deploy:
-- openssl aes-256-cbc -K $encrypted_4a09436dfeda_key -iv $encrypted_4a09436dfeda_iv -in travis/secring.asc.enc -out travis/secring.asc -d
+- openssl aes-256-cbc -K $encrypted_4a09436dfeda_key -iv $encrypted_4a09436dfeda_iv -in travis/secring.bin.enc -out travis/secring.bin -d
 
 deploy:
   provider: script
