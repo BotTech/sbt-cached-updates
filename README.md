@@ -10,7 +10,9 @@ This plugin fixes that.
 
 ## Diagnosis
 
-If you notice that updates are slow then either:
+If you notice that updates are slow or perhaps importing/refreshing the sbt project in Intellij IDEA takes forever then you may benefit from using this plugin.
+
+To diagnose what task is slow then either:
 * run sbt with:
   ```bash
   sbt -Dsbt.task.timings=true -Dsbt.task.timings.on.shutdown=false
