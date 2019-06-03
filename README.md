@@ -3,16 +3,23 @@
 [![Build Status][Build Status]](https://travis-ci.org/BotTech/sbt-cached-updates)
 [![Download][Download]](https://bintray.com/bottech/sbt-plugins/sbt-cached-updates/_latestVersion)
 
-An sbt plugin which caches all the sbt update tasks.
+sbt-cached-updates is an sbt plugin which caches all the sbt update tasks.
 
 By default, sbt only caches the `update` task. It does not cache `updateClassifiers` or `updateSbtClassifiers`.
 This plugin fixes that.
 
-Run sbt with:
-```bash
-sbt -Dsbt.task.timings=true -Dsbt.task.timings.on.shutdown=false
-```
-Alternatively use the [sbt-optimizer][sbt-optimizer] plugin and see the massive time savings.
+## Diagnosis
+
+If you notice that updates are slow or perhaps importing/refreshing the sbt project in Intellij IDEA takes forever then you may benefit from using this plugin.
+
+To diagnose what task is slow then either:
+* run sbt with:
+  ```bash
+  sbt -Dsbt.task.timings=true -Dsbt.task.timings.on.shutdown=false
+  ```
+  or,
+* enable the [sbt-optimizer][sbt-optimizer] plugin.
+
 Keep in mind that updates are forced when you run the task directly.
 
 ## Usage
